@@ -204,7 +204,7 @@ python inference.py \
   --checkpoint runs/fsrcnn_deconv_x2/best_psnr.pth
 ```
 
-For a ground-truth image of size \(W\times H\), inference saves:
+For a ground-truth image of size WxH, inference saves:
 
 ```text
 <name>_LR_x2.png                  W/2 x H/2
@@ -237,7 +237,7 @@ The following values were read from the supplied `best_psnr.pth` checkpoint:
 | Set5 ×2 | 37.00 dB | 0.9558 | 36.432 dB | 0.9528 | -0.568 dB | -0.0030 |
 | Set14 ×2 | 32.63 dB | 0.9088 | 32.394 dB | 0.9054 | -0.236 dB | -0.0034 |
 
-> The well-known paper values above correspond to the authors' best FSRCNN results trained with both the **91-image** and **General-100** datasets. The supplied project checkpoint was trained only with the **91-image** dataset. The comparison is therefore informative, but not a strictly like-for-like reproduction.
+> The paper [1] values above correspond to the authors' best FSRCNN results trained with both the **91-image** and **General-100** datasets. The supplied project checkpoint was trained only with the **91-image** dataset. The comparison is therefore informative, but not a strictly like-for-like reproduction.
 
 ---
 
