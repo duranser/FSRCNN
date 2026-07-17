@@ -1,6 +1,6 @@
 # FSRCNN in PyTorch
 
-A compact PyTorch implementation of **Fast Super-Resolution Convolutional Neural Network (FSRCNN)** for single-image super-resolution. The project follows the principal FSRCNN architecture proposed by Dong, Loy, and Tang [[1]](#ref-1), while providing a practical PyTorch training, evaluation, and thesis-oriented inference pipeline.
+A compact PyTorch implementation of **Fast Super-Resolution Convolutional Neural Network (FSRCNN)** for single-image super-resolution. The project follows the principal FSRCNN architecture proposed by Dong, Loy, and Tang [[1]](#ref-1), while providing a practical PyTorch training, evaluation, and inference pipeline.
 
 The default experiment uses:
 
