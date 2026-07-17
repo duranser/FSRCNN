@@ -21,7 +21,7 @@ The default experiment uses:
 </p>
 
 <p align="center">
-  <em>Comparison of SRCNN and FSRCNN. Figure reproduced from the original FSRCNN paper by Dong, Loy, and Tang [1].</em>
+  <em>Comparison of SRCNN and FSRCNN. Figure is taken from the original FSRCNN paper by Dong, Loy, and Tang [1].</em>
 </p>
 
 FSRCNN processes the native low-resolution image directly, rather than first enlarging it with bicubic interpolation. Its hourglass-shaped network contains five stages:
