@@ -14,7 +14,7 @@ The default experiment uses:
 
 ---
 
-## Original FSRCNN architecture
+## FSRCNN architecture
 
 <p align="center">
 <img width="957" height="381" alt="fsrcnn_architecture" src="https://github.com/user-attachments/assets/ce200f01-f4e5-478a-9932-a19c974605f1" />
@@ -61,6 +61,35 @@ DeConv(9, 1, 56), stride = scale
 | `--epochs` | Number of training epochs | `100` |
 | `--lr` | Adam learning rate | `1e-3` |
 
+
+---
+
+## Differences from the original Caffe implementation
+
+| Aspect | Original Caffe-based FSRCNN | This PyTorch project |
+|---|---|---|
+| **Framework** | Caffe training pipeline; the original work also used a C++ implementation for runtime evaluation | PyTorch modules, automatic differentiation, DataLoader, CUDA support, and optional AMP |
+| **Main architecture** | `Conv(5,d,1) -> Conv(1,s,d) -> m x Conv(3,s,s) -> Conv(1,d,s) -> DeConv(9,1,d)` | The same nominal FSRCNN(56,12,4) topology is preserved |
+| **Loss function** | Caffe Euclidean loss, corresponding to a squared-error objective | Mean L1 reconstruction loss |
+| **Optimizer** | Stochastic gradient descent with momentum 0.9 | Adam |
+| **Training patch size** | Small patches prepared for the original Caffe-valid deconvolution and label alignment | 48×48 LR patches and 96×96 HR targets for ×2 |
+| **Patch generation** | Patches generated beforehand and stored for Caffe, commonly in HDF5 format | Random aligned LR/HR patches generated online from complete images |
+| **Degradation implementation** | MATLAB-oriented bicubic preprocessing | Pillow bicubic downsampling, applied consistently to the complete image before patch extraction |
+| **Y-channel conversion** | MATLAB-compatible limited-range YCbCr luminance | Explicit MATLAB-compatible limited-range Y conversion used in training, validation, testing, and inference |
+| **Training dataset** | The best reported paper results used 91-image together with General-100 | The supplied checkpoint uses only 91-image |
+| **Evaluation implementation** | MATLAB-oriented PSNR/SSIM, interpolation, color conversion, and border handling | PyTorch PSNR/SSIM with MATLAB-compatible Y, floating-point tensors, and scale-factor border shaving |
+| **Chrominance reconstruction** | Super-resolution on Y; Cb and Cr enlarged with bicubic interpolation | The same luminance-only reconstruction and bicubic chrominance procedure |
+
+---
+
+### Comparison with the original paper
+
+| Dataset | Original FSRCNN PSNR | Original FSRCNN SSIM | This project PSNR | This project SSIM | ΔPSNR | ΔSSIM |
+|---|---:|---:|---:|---:|---:|---:|
+| Set5 ×2 | 37.00 dB | 0.9558 | 36.432 dB | 0.9528 | -0.568 dB | -0.0030 |
+| Set14 ×2 | 32.63 dB | 0.9088 | 32.394 dB | 0.9054 | -0.236 dB | -0.0034 |
+
+> The paper [1] values above correspond to the authors' best FSRCNN results trained with both the **91-image** and **General-100** datasets. The supplied project checkpoint was trained only with the **91-image** dataset. The comparison is therefore informative, but not a strictly like-for-like reproduction.
 
 ---
 
@@ -229,33 +258,6 @@ The following values were read from the supplied `best_psnr.pth` checkpoint:
 - **Parameters:** 12,809
 - **Mean Set5/Set14 PSNR:** 34.413 dB
 - **Mean Set5/Set14 SSIM:** 0.9291
-
-### Comparison with the original paper
-
-| Dataset | Original FSRCNN PSNR | Original FSRCNN SSIM | This project PSNR | This project SSIM | ΔPSNR | ΔSSIM |
-|---|---:|---:|---:|---:|---:|---:|
-| Set5 ×2 | 37.00 dB | 0.9558 | 36.432 dB | 0.9528 | -0.568 dB | -0.0030 |
-| Set14 ×2 | 32.63 dB | 0.9088 | 32.394 dB | 0.9054 | -0.236 dB | -0.0034 |
-
-> The paper [1] values above correspond to the authors' best FSRCNN results trained with both the **91-image** and **General-100** datasets. The supplied project checkpoint was trained only with the **91-image** dataset. The comparison is therefore informative, but not a strictly like-for-like reproduction.
-
----
-
-## Differences from the original Caffe implementation
-
-| Aspect | Original Caffe-based FSRCNN | This PyTorch project |
-|---|---|---|
-| **Framework** | Caffe training pipeline; the original work also used a C++ implementation for runtime evaluation | PyTorch modules, automatic differentiation, DataLoader, CUDA support, and optional AMP |
-| **Main architecture** | `Conv(5,d,1) -> Conv(1,s,d) -> m x Conv(3,s,s) -> Conv(1,d,s) -> DeConv(9,1,d)` | The same nominal FSRCNN(56,12,4) topology is preserved |
-| **Loss function** | Caffe Euclidean loss, corresponding to a squared-error objective | Mean L1 reconstruction loss |
-| **Optimizer** | Stochastic gradient descent with momentum 0.9 | Adam |
-| **Training patch size** | Small patches prepared for the original Caffe-valid deconvolution and label alignment | 48×48 LR patches and 96×96 HR targets for ×2 |
-| **Patch generation** | Patches generated beforehand and stored for Caffe, commonly in HDF5 format | Random aligned LR/HR patches generated online from complete images |
-| **Degradation implementation** | MATLAB-oriented bicubic preprocessing | Pillow bicubic downsampling, applied consistently to the complete image before patch extraction |
-| **Y-channel conversion** | MATLAB-compatible limited-range YCbCr luminance | Explicit MATLAB-compatible limited-range Y conversion used in training, validation, testing, and inference |
-| **Training dataset** | The best reported paper results used 91-image together with General-100 | The supplied checkpoint uses only 91-image |
-| **Evaluation implementation** | MATLAB-oriented PSNR/SSIM, interpolation, color conversion, and border handling | PyTorch PSNR/SSIM with MATLAB-compatible Y, floating-point tensors, and scale-factor border shaving |
-| **Chrominance reconstruction** | Super-resolution on Y; Cb and Cr enlarged with bicubic interpolation | The same luminance-only reconstruction and bicubic chrominance procedure |
 
 ---
 
