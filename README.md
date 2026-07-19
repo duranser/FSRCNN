@@ -183,7 +183,7 @@ Inspect all epoch checkpoints:
 
 ```bash
 python -m fsrcnn.utils inspect-epochs \
-  --epoch-dir runs/fsrcnn_deconv_y_x2/epochs
+  --epoch-dir runs/fsrcnn_x2/epochs
 ```
 
 > **Validation note:** the default script evaluates Set5 and Set14 during training and selects the best checkpoint from their mean score. For a strictly independent test protocol, provide a separate validation dataset through `--val-dirs` and use Set5 and Set14 only with `test.py`.
